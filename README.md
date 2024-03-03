@@ -36,6 +36,7 @@ sudo apt-get install docker-compose-plugin
  docker network create -d bridge --subnet=10.100.0.0/24 nginx-network
 ```
 ## 5. Теперь запустим для начала Portainer CE, я его уже поместил в docker-compose (для удобства), запускаем его в корне каталога с проектом командой:
+
 ```bash
  docker compose -f docker-compose-portainer.yml up -d
 ```
@@ -43,69 +44,22 @@ sudo apt-get install docker-compose-plugin
 *  WG_HOST и PASSWORD, это нужно для правильной генерации конфигов для WG и входа в Web-панель Wireguard
 
 ## 7. После чего сохраняем файл и запускаем Stack Compose командой:
+
 ```bash
  docker compose -f docker-compose.yml up -d
 ```
 ## 8. Теперь вам необходимо поменять пароль от панели Adguard Home (это наш DNS-сервер фильтрации запросов, там будет показываться информация по каждому клиенту (кто куда ходит и т д, а также фильтрованивание рекламы))
 я уже настроил его за Вас, Вам необходимо лишь поменять пароль от панели и зайти, это можно сделать следующей командой в корне проекта ### (делать под рутом или через SUDO), и следовать инструкции скрипта.
+
 ```bash
  chmod +x ./change_password_adguard.sh
  chmod +x ./tools/agh.sh
  ./change_password_adguard.sh
 ```
-## 9. Ну и  последнее самое сложное, это маршрутизация между адаптерами, в общем, если Вы не меняли подсети, то изменений нужно внести немного, а именно, поменять название адаптера сети BRIDGE, который мы создавали в 4 пункте
-чтобы его посмотреть необходимо ввести команду ip a и найти в гуще строк название адаптера у которого подсеть такая же как в пункте 4.
+## 9. Ну и  последнее самое сложное, это маршрутизация между адаптерами, в общем, если Вы не меняли подсети, то изменения вносить не нужно, я уже за Вас все настроил :)
 
-## Пример у меня подсеть 10.100.0.0/24, при вводе команды:
-```bash
- ip a
-```
-## Получаем что такой вывод
-```bash
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    inet6 ::1/128 scope host 
-       valid_lft forever preferred_lft forever
-2: ens3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    link/ether 52:54:00:1f:06:48 brd ff:ff:ff:ff:ff:ff
-    altname enp0s3
-    inet 12.12.12.12/24 brd 12.12.12.12 scope global ens3
-       valid_lft forever preferred_lft forever
-    inet6 2a05:541:108:135::1/48 scope global 
-       valid_lft forever preferred_lft forever
-    inet6 fe80::5054:ff:fe1f:648/64 scope link 
-       valid_lft forever preferred_lft forever
-3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
-    link/ether 02:42:55:1a:1a:0c brd ff:ff:ff:ff:ff:ff
-    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
-       valid_lft forever preferred_lft forever
-    inet6 fe80::42:55ff:fe1a:1a0c/64 scope link 
-       valid_lft forever preferred_lft forever
-4: br-ae615af2639c: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default 
-    link/ether 02:42:2a:1f:31:e7 brd ff:ff:ff:ff:ff:ff
-    inet 10.100.0.1/24 brd 10.100.0.255 scope global br-ae615af2639c
-       valid_lft forever preferred_lft forever
-    inet6 fe80::42:2aff:fe1f:31e7/64 scope link 
-       valid_lft forever preferred_lft forever
-54: vethdc12a8b@if53: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
-    link/ether ba:10:cc:a1:25:1e brd ff:ff:ff:ff:ff:ff link-netnsid 0
-    inet6 fe80::b810:ccff:fea1:251e/64 scope link 
-       valid_lft forever preferred_lft forever
-56: veth17a0812@if55: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
-    link/ether d2:c6:0c:e5:d8:a1 brd ff:ff:ff:ff:ff:ff link-netnsid 1
-    inet6 fe80::d0c6:cff:fee5:d8a1/64 scope link 
-       valid_lft forever preferred_lft forever
-70: wg0: <POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1420 qdisc noqueue state UNKNOWN group default qlen 1000
-    link/none 
-    inet 10.10.10.1/24 scope global wg0
-       valid_lft forever preferred_lft forever
-```
+**Пишем команду (либо под root, либо везде добавляем sudo):**
 
-Здесь мы можем увидеть, что у нас подсеть называется br-ae615af2639c (у вас скорее всего будет также, только поменяется набор символов после br-), копируем название сети и заходим в файл **iptables_patch.sh**
-И ищем там название br-... и меняем на своё, и сохраняем. Если вы меняли подсеть **nginx-network** сети докер, то Вам нужно также указать свой диапозон в данном файле
-**После чего пишем команду (либо под root, либо везде добавляем sudo):**
 ```bash
  chmod +x iptables_patch.sh
  ./iptables_patch.sh
@@ -114,7 +68,8 @@ sudo apt-get install docker-compose-plugin
 ## 10. Пункт по желанию!
 Если вдруг выхотите закрыть из внешнего интернета доступ к 51821, то нужно запустить еще один скрипт который это делает!
 Не забудьте перед этим создать конфиг Wireguard или AmnesiaVPN иначе вы потеряете доступ к панели, итак:
-Вводим команды в корне проекта:
+
+### Вводим команды в корне проекта:
 ```bash
  chmod +x close_port_wg_ui.sh
  ./close_port_wg_ui.sh

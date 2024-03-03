@@ -34,8 +34,8 @@ echo -e "${GREEN}Вносим правила для маршрутизации �
 iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -i wg0 -s 10.100.0.0/24 -j ACCEPT
 iptables -I DOCKER-USER -p tcp -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-iptables -I DOCKER-USER -i docker0 -o br-ae615af2639c -j ACCEPT
-iptables -I DOCKER-USER -i br-ae615af2639c -o docker0 -j ACCEPT
+iptables -I DOCKER-USER -i amn0 -o br-+ -j ACCEPT
+iptables -I DOCKER-USER -i br-+ -o amn0 -j ACCEPT
 iptables -t nat -A POSTROUTING -s 10.10.10.0/24 -o ens3 -j MASQUERADE
 iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o ens3 -j MASQUERADE
 

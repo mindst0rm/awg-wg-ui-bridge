@@ -12,8 +12,16 @@ iptables -A INPUT -p tcp --dport 51821 -j REJECT
 echo -e "${YELLOW}Разрешаем доступ из интерфейса Wireguard${NC}"
 # Разрешить доступ к порту 51821 для интерфейса wg0
 iptables -I INPUT -i wg0 -p tcp --dport 51821 -j ACCEPT
+# Разрешить доступ к порту 51821 для интерфейса amn0
+iptables -I INPUT -i amn0 -p tcp --dport 51821 -j ACCEPT
+# Разрешить доступ к порту 51821 для интерфейса br-+
+iptables -I INPUT -i br-+ -p tcp --dport 51821 -j ACCEPT
 
 echo -e "${GREEN}Готово! Доступ к порту 51821 закрыт!${NC}"
 
 echo -e "${RED}Если вдруг вы забыли создать себе конфиг Wireguard для подключения к VPN, то запустите еще раз iptables_patch.sh, он откатит данные правила!${NC}"
 
+echo -e "${GREEN}Сохраняем правила..${NC}"
+sudo netfilter-persistent save
+echo -e "${GREEN}ГОТОВО! Вот ваши таблица правил iptables: ${NC}"
+sudo iptables-save
