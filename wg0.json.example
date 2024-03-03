@@ -1,0 +1,20 @@
+{
+  "server": {
+    "privateKey": "",
+    "publicKey": "",
+    "address": "10.10.10.1"
+  },
+  "clients": {
+    "3c6a928e-08bb-4fe4-9798-1e18609c013c": {
+      "name": "Name Client",
+      "address": "10.10.10.2",
+      "privateKey": "",
+      "publicKey": "",
+      "preSharedKey": "",
+      "allowedIPs": "",
+      "createdAt": "",
+      "updatedAt": "",
+      "enabled": true
+    },
+    ...
+}

@@ -1,0 +1,5 @@
+*.log
+/ng-proxy-manager/*
+work
+wg0.conf
+wg0.json

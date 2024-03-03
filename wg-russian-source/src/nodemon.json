@@ -1,0 +1,3 @@
+{
+  "ignore": ["wg0.conf", "wg0.json"]
+}

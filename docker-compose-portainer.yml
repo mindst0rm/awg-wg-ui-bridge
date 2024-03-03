@@ -1,0 +1,22 @@
+version: "3"
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: always
+    container_name: PortinaerCELatest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    # Если хотите чтобы панель Portainer смотрела в интернет можно раскомментить, если хотите заходить туда только
+    # по ВПН то оставьте как есть, и заходите на 10.100.0.5:9000
+    # ports:
+    #   - "9443:9443"
+    #   - "9000:9000"
+    networks:
+      nginx-network:
+        ipv4_address: 10.100.0.5
+volumes:
+  portainer_data:
+networks:
+  nginx-network:
+    external: true
